@@ -1,6 +1,9 @@
 # timewheel
 Golang实现的时间轮
 
+
+![时间轮](https://raw.githubusercontent.com/ouqiang/timewheel/master/timewheel.jpg)
+
 # 安装
 
 ```shell
