@@ -11,7 +11,6 @@ import (
 type TimeWheel struct {
     interval time.Duration
     ticker *time.Ticker
-    currentPos int
     slots *ring.Ring
     slotNum int
     taskChannel chan Task
@@ -33,7 +32,6 @@ func New(interval time.Duration, slotNum int) *TimeWheel {
     }
     tw := &TimeWheel{
         interval: interval,
-        currentPos: 0,
         slots: ring.New(slotNum),
         slotNum: slotNum,
         taskChannel: make(chan Task),
@@ -85,11 +83,6 @@ func (tw *TimeWheel) start()  {
 func (tw *TimeWheel) tickHandler()  {
     l := tw.slots.Value.(*list.List)
     tw.scanAndRunTask(l)
-    if tw.currentPos == tw.slotNum - 1 {
-        tw.currentPos = 0
-    } else {
-        tw.currentPos++
-    }
     tw.slots = tw.slots.Next()
 }
 
@@ -110,21 +103,18 @@ func (tw *TimeWheel) scanAndRunTask(l *list.List)  {
 }
 
 func (tw *TimeWheel) addTask(task *Task)  {
-    pos, circle := tw.getPositionAndCircle(task.delay)
+    step, circle := tw.getStepAndCircle(task.delay)
     task.circle = circle
 
-    l := tw.slots.Move(pos).Value.(*list.List)
+    l := tw.slots.Move(step).Value.(*list.List)
     l.PushBack(task)
 }
 
-func (tw *TimeWheel) getPositionAndCircle(d time.Duration) (pos int, circle int) {
+func (tw *TimeWheel) getStepAndCircle(d time.Duration) (step int, circle int) {
     delaySeconds := int(d.Seconds())
     intervalSeconds := int(tw.interval.Seconds())
     circle = int(delaySeconds / intervalSeconds /  tw.slotNum)
-    pos = tw.currentPos + (delaySeconds % tw.slotNum)
-    if pos > 0 {
-        pos -= 1
-    }
+    step = int(delaySeconds / intervalSeconds) % tw.slotNum
 
     return
 }
