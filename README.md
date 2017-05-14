@@ -13,7 +13,7 @@ go get -u github.com/ouqiang/timewheel
 package main
 
 import (
-    "github.com/ouqiang/timewheel/timewheel"
+    "github.com/ouqiang/timewheel"
     "time"
 )
 
