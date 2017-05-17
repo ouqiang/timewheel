@@ -18,21 +18,19 @@ package main
 import (
     "github.com/ouqiang/timewheel"
     "time"
+    "fmt"
 )
 
 func main()  {
-    // tick刻度为1秒, 3600个槽
-    tw := timewheel.New(1 * time.Second, 3600)
+    // tick刻度为1秒, 3600个槽, 执行的job
+    tw := timewheel.New(1 * time.Second, 3600, func(data []interface{}) {
+        fmt.Println(data)
+        // do something
+    })
     tw.Start()
-    tw.Add(5 * time.Second, func() {
-        // do something
-    })
-    tw.Add(10 * time.Minute, func() {
-        // do something
-    })
-    tw.Add(35 * time.Hour, func() {
-        // do something
-    })
+    tw.Add(5 * time.Second, []interface{}{1})
+    tw.Add(10 * time.Minute, []interface{}{2})
+    tw.Add(35 * time.Hour, []interface{}{3})
     // 停止
     tw.Stop()
 }
