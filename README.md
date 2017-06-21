@@ -5,20 +5,7 @@ Golang实现的时间轮
 ![时间轮](https://raw.githubusercontent.com/ouqiang/timewheel/master/timewheel.jpg)
 
 # 原理
-轮中的实线指针指向轮子上的一个槽（slot），它以恒定的速度顺时针转动，每转动一步就指向下一个槽，每次转动称为一个滴答（tick）。
-
-一个滴答的时间称为是间轮的槽间隔si（slot interval），它实际上就是心跳时间。
-
-该轮共有N个槽，因此它运转一周的时间是N×si 。每个槽指向一条定时器链表，每条链表上的定时器具有相同的特性：它们的定时时间相差N×si的整数倍。时间轮正是利用这个关系将定时器散列到不同的链表中。
-
-假如现在指针指向槽cs，我们要添加一个定时时间为ti的定时器，则该定时器将被插入ts（timer slot）对应的链表中：ts = (cs + (ti / si)) %N
-
-基于排序链表的定时器使用唯一的一条链表来管理所有定时器，所以插入操作的效率随着定时器数目的增多而降低。而时间轮使用哈希表的思想，将定时器散列到不同的链表上。
-
-这样每条链表上的定时数目都将明显减少，插入操作的效率受定时器数目的影响较少。
-
-很显然，对时间轮而言，要提高定时精度，就要使si值足够小；要提高执行效率，则要求N值足够大。 
- 
+[延迟消息的实现](http://www.10tiao.com/html/249/201703/2651959961/1.html)
 
 # 安装
 
@@ -34,21 +21,33 @@ package main
 import (
     "github.com/ouqiang/timewheel"
     "time"
-    "fmt"
 )
 
 func main()  {
-    // tick刻度为1秒, 3600个槽, 执行的job
-    tw := timewheel.New(1 * time.Second, 3600, func(data []interface{}) {
-        fmt.Println(data)
+    // 初始化时间轮
+    // 第一个参数为tick刻度, 即时间轮多久转动一次
+    // 第二个参数为时间轮槽slot数量
+    // 第三个参数为回调函数
+    tw := timewheel.New(1 * time.Second, 3600, func(data timewheel.TaskData) {
         // do something
     })
+    
+    // 启动时间轮
     tw.Start()
-    tw.Add(5 * time.Second, []interface{}{1})
-    tw.Add(10 * time.Minute, []interface{}{2})
-    tw.Add(35 * time.Hour, []interface{}{3})
-    // 停止
+    
+    // 添加定时器 
+    // 第一个参数为延迟时间
+    // 第二个参数为定时器唯一标识, 删除定时器需传递此参数
+    // 第三个参数为用户自定义数据, 此参数将会传递给回调函数, 类型为map[interface{}] interface{}
+    tw.AddTimer(5 * time.Second, conn, timewheel.TaskData{"uid" : 105626})
+    
+    // 删除定时器, 参数为添加定时器传递的唯一标识
+    tw.RemoveTimer(conn)
+    
+    // 停止时间轮
     tw.Stop()
+    
+    select{}
 }
 ```
 
