@@ -3,7 +3,6 @@ package timewheel
 import (
     "time"
     "container/list"
-    "fmt"
 )
 
 // @author qiang.ou<qingqianludao@gmail.com>
@@ -106,7 +105,6 @@ func (tw *TimeWheel) start()  {
 }
 
 func (tw *TimeWheel) tickHandler()  {
-    fmt.Printf("%+v\n",tw.timer)
     l := tw.slots[tw.currentPos]
     tw.scanAndRunTask(l)
     if tw.currentPos == tw.slotNum - 1 {
