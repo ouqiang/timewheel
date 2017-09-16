@@ -7,11 +7,12 @@ import (
 
 // @author qiang.ou<qingqianludao@gmail.com>
 
-// 延时任务回调函数
+// Job 延时任务回调函数
 type Job func(TaskData)
+// TaskData 回调函数参数类型
 type TaskData map[interface{}]interface{}
 
-// 时间轮
+// TimeWheel 时间轮
 type TimeWheel struct {
 	interval time.Duration // 指针每隔多久往前移动一格
 	ticker   *time.Ticker
@@ -26,7 +27,7 @@ type TimeWheel struct {
 	stopChannel       chan bool        // 停止定时器channel
 }
 
-// 延时任务
+// Task 延时任务
 type Task struct {
 	delay  time.Duration // 延迟时间
 	circle int           // 时间轮需要转动几圈
