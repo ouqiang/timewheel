@@ -1,6 +1,7 @@
 # timewheel
 Golang实现的时间轮
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/ouqiang/timewheel)](https://goreportcard.com/report/github.com/ouqiang/timewheel)
 
 ![时间轮](https://raw.githubusercontent.com/ouqiang/timewheel/master/timewheel.jpg)
 
