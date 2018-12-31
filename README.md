@@ -29,7 +29,7 @@ func main()  {
     // 第一个参数为tick刻度, 即时间轮多久转动一次
     // 第二个参数为时间轮槽slot数量
     // 第三个参数为回调函数
-    tw := timewheel.New(1 * time.Second, 3600, func(data timewheel.TaskData) {
+    tw := timewheel.New(1 * time.Second, 3600, func(data interface{}) {
         // do something
     })
     
