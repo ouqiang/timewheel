@@ -8,9 +8,8 @@ import (
 // @author qiang.ou<qingqianludao@gmail.com>
 
 // Job 延时任务回调函数
-type Job func(TaskData)
+type Job func(interface{})
 // TaskData 回调函数参数类型
-type TaskData map[interface{}]interface{}
 
 // TimeWheel 时间轮
 type TimeWheel struct {
@@ -32,7 +31,7 @@ type Task struct {
 	delay  time.Duration // 延迟时间
 	circle int           // 时间轮需要转动几圈
 	key    interface{}   // 定时器唯一标识, 用于删除定时器
-	data   TaskData      // 回调函数参数
+	data   interface{}      // 回调函数参数
 }
 
 // New 创建时间轮
@@ -76,7 +75,7 @@ func (tw *TimeWheel) Stop() {
 }
 
 // AddTimer 添加定时器 key为定时器唯一标识
-func (tw *TimeWheel) AddTimer(delay time.Duration, key interface{}, data TaskData) {
+func (tw *TimeWheel) AddTimer(delay time.Duration, key interface{}, data interface{}) {
 	if delay <= 0 || key == nil {
 		return
 	}
