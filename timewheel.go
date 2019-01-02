@@ -76,7 +76,7 @@ func (tw *TimeWheel) Stop() {
 
 // AddTimer 添加定时器 key为定时器唯一标识
 func (tw *TimeWheel) AddTimer(delay time.Duration, key interface{}, data interface{}) {
-	if delay <= 0 || key == nil {
+	if delay < 0 {
 		return
 	}
 	tw.addTaskChannel <- Task{delay: delay, key: key, data: data}
@@ -129,7 +129,9 @@ func (tw *TimeWheel) scanAndRunTask(l *list.List) {
 		go tw.job(task.data)
 		next := e.Next()
 		l.Remove(e)
-		delete(tw.timer, task.key)
+		if task.key != nil {
+			delete(tw.timer, task.key)
+		}
 		e = next
 	}
 }
@@ -141,7 +143,9 @@ func (tw *TimeWheel) addTask(task *Task) {
 
 	tw.slots[pos].PushBack(task)
 
-	tw.timer[task.key] = pos
+	if task.key != nil {
+		tw.timer[task.key] = pos
+	}
 }
 
 // 获取定时器在槽中的位置, 时间轮需要转动的圈数
