@@ -5,9 +5,6 @@ Golang实现的时间轮
 
 ![时间轮](https://raw.githubusercontent.com/ouqiang/timewheel/master/timewheel.jpg)
 
-# 原理
-[延迟消息的实现](http://www.10tiao.com/html/249/201703/2651959961/1.html)
-
 # 安装
 
 ```shell
